@@ -1,0 +1,30 @@
+# Variables de entorno (NUNCA subir al repo)
+.env
+
+# Base vectorial generada en runtime
+src/data_layer/lancedb_store/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Archivos .cuig / .cuib de clientes (datos sensibles de DACER)
+src/data_layer/raw_docs/*.cuig
+src/data_layer/raw_docs/*.cuib
