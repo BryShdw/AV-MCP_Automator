@@ -1,5 +1,8 @@
 # Variables de entorno (NUNCA subir al repo)
 .env
+.env.*
+!.env.example
+.av_mcp_config.json
 
 # Base vectorial generada en runtime
 src/data_layer/lancedb_store/
@@ -15,6 +18,12 @@ build/
 .venv/
 venv/
 env/
+.pytest_cache/
+.mypy_cache/
+.coverage
+
+# Logs
+*.log
 
 # IDEs
 .vscode/
@@ -28,3 +37,20 @@ Thumbs.db
 # Archivos .cuig / .cuib de clientes (datos sensibles de DACER)
 src/data_layer/raw_docs/*.cuig
 src/data_layer/raw_docs/*.cuib
+
+# Archivos de pruebas locales y temporales
+add_tests.py
+append_tests.py
+audit.py
+fix_prompt.py
+fix_tests.py
+test_bug.py
+update_status.py
+Prueba con elementos.txt
+resultados.md
+Prompts_pruebas.md
+
+# Documentos de prácticas universitarias 
+informe.md
+PROJECT_STATUS.md
+Entregable_CV_Practicas.md

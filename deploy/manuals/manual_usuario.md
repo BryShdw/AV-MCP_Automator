@@ -8,8 +8,8 @@
 
 ## 1. Requisitos previos
 - Python 3.11+ instalado
-- Crestron Construct™ instalado y con un proyecto abierto
-- Conexión a internet (para Gemini) o Ollama instalado (para modo offline)
+- Crestron Construct™ instalado y con un proyecto creado
+- Conexión a internet (para Gemini 2.5 Flash-Lite)
 
 ## 2. Instalación
 
@@ -23,7 +23,7 @@ pip install -r requirements.txt
 
 # Configurar variables de entorno
 cp .env.example .env
-# Editar .env con tu clave de API de Gemini y la ruta del proyecto Crestron
+# Editar .env con tu clave de API de Gemini (GEMINI_API_KEY)
 ```
 
 ## 3. Inicio del sistema
@@ -38,16 +38,28 @@ streamlit run src/client/app.py
 
 ## 4. Uso paso a paso
 
-### Paso 1 — Describir la pantalla
-<!-- Completar en Semana 13 con capturas de pantalla reales -->
+### Paso 1 — Seleccionar el proyecto Crestron
+Al abrir la UI por primera vez, selecciona tu proyecto:
+1. Haz clic en **📂 Explorar...** para abrir el selector de carpetas
+2. Navega hasta `Documents/Crestron/Crestron Construct/Solutions/MiProyecto/`
+3. El sistema detecta automáticamente el nombre del proyecto
+4. Verás un panel con la información del proyecto activo y las páginas existentes
+
+> La ruta se guarda automáticamente. La próxima vez que abras la app, tu proyecto estará preseleccionado.
 
 ### Paso 2 — Seleccionar el tipo de panel
 <!-- Completar en Semana 13 -->
 
-### Paso 3 — Generar la interfaz
+### Paso 3 — Describir la pantalla
+<!-- Completar en Semana 13 con capturas de pantalla reales -->
+
+### Paso 4 — Generar la interfaz
 <!-- Completar en Semana 13 -->
 
-### Paso 4 — Abrir en Crestron Construct
+### Paso 5 — Abrir en Crestron Construct
+El archivo `.cuig` generado se guarda automáticamente en la subcarpeta interna
+del proyecto (`Solutions/MiProyecto/MiProyecto/`). Crestron Construct detecta
+las nuevas páginas automáticamente al abrir la solución.
 <!-- Completar en Semana 13 con capturas del resultado WYSIWYG -->
 
 ## 5. Solución de problemas frecuentes
@@ -55,6 +67,6 @@ streamlit run src/client/app.py
 | Problema | Causa probable | Solución |
 |---|---|---|
 | "API Key inválida" | Clave de Gemini incorrecta en .env | Verificar GEMINI_API_KEY en .env |
-| "Cuota agotada" | Se superaron las 1,000 llamadas diarias | El sistema usa Ollama automáticamente |
-| "El .cuig no abre en Construct" | Ruta incorrecta en .env | Verificar CRESTRON_PROJECT_PATH |
-| Ollama no responde | El modelo no está descargado | Ejecutar: `ollama pull llama3.2:3b-instruct-q4_K_M` |
+| "Cuota agotada" | Se superaron las 1,000 llamadas diarias | Esperar al día siguiente o usar otra clave |
+| "El .cuig no abre en Construct" | Carpeta de proyecto incorrecta | Verificar que el proyecto seleccionado en la UI coincide con la solución en Construct |
+| Botón "Generar" deshabilitado | No hay proyecto seleccionado | Usar 📂 Explorar o escribir la ruta manualmente |

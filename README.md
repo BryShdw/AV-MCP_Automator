@@ -1,7 +1,6 @@
 # AV-MCP Automator
 
-Middleware basado en Model Context Protocol para la generación automática de interfaces
-nativas de Crestron Construct™ (.cuig / .cuib) mediante IA generativa.
+Middleware basado en Model Context Protocol para la generación automática de interfaces nativas de Crestron Construct™ (.cuig / .cuib) mediante IA generativa.
 
 **Empresa:** DACER S.A.C. — Miraflores, Lima, Perú  
 **Practicante:** Brayan Delgado Oblitas  
@@ -9,66 +8,96 @@ nativas de Crestron Construct™ (.cuig / .cuib) mediante IA generativa.
 
 ---
 
-## Estructura del proyecto
+## Requisitos
+
+- Python 3.10 o superior (recomendado 3.11+)
+- Git
+- Crestron Construct™ instalado en el sistema
+- Una clave de API válida para Gemini (Google AI Studio)
+- Una clave de API válida para Firecrawl (para capacidades de web scraping)
+
+## Instalación
+
+```bash
+# 1. Clonar el repositorio
+git clone <url-del-repositorio>
+cd AV-MCP_Automator
+
+# 2. Crear y activar el entorno virtual (recomendado)
+python -m venv venv
+# En Windows:
+venv\Scripts\activate
+# En Linux/Mac:
+source venv/bin/activate
+
+# 3. Instalar dependencias
+pip install -r requirements.txt
+```
+
+## Configuración del .env
+
+Por seguridad, las credenciales del proyecto no se suben al repositorio. Debes configurar tu propio archivo local basándote en el ejemplo proporcionado.
+
+```bash
+# 1. Copiar el archivo de ejemplo
+cp .env.example .env
+
+# 2. Editar .env con tus credenciales
+```
+Asegúrate de editar el archivo `.env` recién creado e introducir tu `GEMINI_API_KEY` y `FIRECRAWL_API_KEY`.
+
+## Cómo ejecutar el proyecto
+
+Para correr el proyecto completo se necesitan dos terminales (ambas con el entorno virtual activado):
+
+```bash
+# 1. (Opcional - Primera vez) Indexar documentación en LanceDB
+python src/data_layer/ingest.py
+
+# 2. Iniciar servidor MCP (Terminal 1)
+python src/server_mcp/main.py
+
+# 3. Iniciar UI de Cliente (Terminal 2)
+streamlit run src/client/app.py
+```
+
+### Selección de proyecto Crestron
+
+Al abrir la UI por primera vez, selecciona tu proyecto Crestron Construct:
+
+1. Haz clic en **📂 Explorar...** para abrir el selector de carpetas nativo.
+2. Navega hasta `Documents/Crestron/Crestron Construct/Solutions/MiProyecto/`.
+3. El sistema detecta automáticamente el nombre del proyecto.
+4. Los archivos `.cuig` se generarán en `Solutions/MiProyecto/MiProyecto/`.
+
+> **Nota:** La ruta del proyecto se persiste automáticamente entre sesiones. No necesitas editar el archivo `.env` para configurar la ruta del proyecto.
+
+## Estructura principal del proyecto
 
 ```
 AV-MCP_Automator/
 ├── docs/                   # Fases RUP: Inicio y Elaboración
-│   ├── 01_Inception/       # Visión, casos de uso, requisitos, riesgos, glosario
-│   └── 02_Elaboration/     # DAS, esquema JSON compilador, diagramas UML
-│       ├── architecture/
-│       ├── schemas/
-│       └── diagrams/
 ├── src/                    # Fase RUP: Construcción
-│   ├── client/             # Capa 1 — UI Streamlit
+│   ├── client/             # Capa 1 — UI Streamlit (con selector de proyecto)
 │   ├── server_mcp/         # Capa 2 — Servidor FastMCP + Compilador .cuig
-│   │   ├── tools/          # search_tool, builder_tool, cuig_tool
-│   │   └── templates/      # Plantillas Python por componente CH5
-│   ├── core_ai/            # Capa 3 — Enrutador IA (Gemini → Ollama fallback)
-│   │   ├── prompts/        # System prompts
-│   │   └── schemas/        # Modelos Pydantic para validar JSON de Gemini
+│   ├── core_ai/            # Capa 3 — Enrutador IA (Gemini 2.5 Flash-Lite)
 │   └── data_layer/         # Capa 4 — LanceDB + documentación fuente
-│       ├── raw_docs/       # Docs .md de Crestron para indexar
-│       └── lancedb_store/  # Base vectorial embebida (generada en runtime)
 ├── tests/                  # Pruebas unitarias e integración
-├── deploy/
-│   └── manuals/            # Manual de usuario y guía de despliegue (Fase Transición)
-├── .env.example            # Variables de entorno requeridas
+├── deploy/                 # Manual de usuario y guía de despliegue
+├── .env.example            # Variables de entorno requeridas (Plantilla segura)
 └── requirements.txt        # Dependencias Python
 ```
 
-## Inicio rápido
-
-```bash
-# 1. Clonar e instalar dependencias
-pip install -r requirements.txt
-
-# 2. Configurar variables de entorno
-cp .env.example .env
-# Editar .env con tu clave de API de Gemini
-
-# 3. Indexar documentación en LanceDB
-python src/data_layer/ingest.py
-
-# 4. Iniciar servidor MCP
-python src/server_mcp/main.py
-
-# 5. Iniciar UI (en otra terminal)
-streamlit run src/client/app.py
-```
-
-## Stack tecnológico
+## Dependencias importantes (Stack Tecnológico)
 
 | Capa | Tecnología |
 |---|---|
 | UI Cliente | Streamlit (Python) |
 | Servidor MCP / Compilador | FastMCP (Python) |
 | IA Principal | Gemini 2.5 Flash-Lite (API) |
-| IA Fallback | Ollama + Llama 3.2 3B (Q4_K_M) |
 | Base Vectorial | LanceDB |
 | Ecosistema destino | Crestron Construct™ (.cuig / .cuib) |
 
-## Documentación del proyecto
+## Licencia
 
-Ver `docs/02_Elaboration/architecture/AV-MCP_Automator_Contexto_Proyecto.md`
-para el documento maestro de contexto del proyecto.
+Desarrollado para uso interno en DACER S.A.C. Todos los derechos reservados salvo que se indique lo contrario.

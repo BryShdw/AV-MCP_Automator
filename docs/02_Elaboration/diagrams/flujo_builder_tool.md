@@ -31,7 +31,8 @@ ENTRADA: dict (JSON validado por Pydantic)
     │
     ▼
 [6] Escribir archivo en disco
-    CRESTRON_PROJECT_PATH / {page_name}.cuig
+    output_path / {page_name}.cuig
+    (output_path = carpeta seleccionada desde la UI)
     │
     ▼
 SALIDA: ruta absoluta del .cuig generado

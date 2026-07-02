@@ -6,6 +6,9 @@ Contrato exacto entre Gemini (o Llama) y el Builder_Tool.
 La IA devuelve **únicamente** un objeto JSON que cumpla este esquema.
 Validado por Pydantic en `src/core_ai/schemas/layout_schema.py`.
 
+> **NOTA DE ARQUITECTURA (Una página por generación):**
+> Este esquema asume una relación 1:1 entre el JSON generado y un archivo `.cuig` en Crestron Construct. Como cada archivo `.cuig` representa exactamente una página, la IA debe generar **una sola página por llamada**. Si se requieren múltiples pantallas, se deben procesar como prompts separados.
+
 ## Esquema
 
 ```json
