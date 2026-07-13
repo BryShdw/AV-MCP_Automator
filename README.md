@@ -95,7 +95,7 @@ AV-MCP_Automator/
 | Servidor MCP / Compilador | FastMCP (Python) |
 | IA Principal | Gemini 2.5 Flash-Lite (API) |
 | Base Vectorial | LanceDB |
-| Ecosistema destino | Crestron Construct™ (.cuig / .cuib) |
+| Ecosistema destino | Crestron Construct™ (.cuig) |
 
 ## Licencia
 
