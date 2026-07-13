@@ -1,6 +1,6 @@
 # AV-MCP Automator
 
-Middleware basado en Model Context Protocol para la generación automática de interfaces nativas de Crestron Construct™ (.cuig / .cuib) mediante IA generativa.
+Middleware basado en Model Context Protocol para la generación automática de interfaces nativas de Crestron Construct™ (.cuig ) mediante IA generativa.
 
 **Empresa:** DACER S.A.C. — Miraflores, Lima, Perú  
 **Practicante:** Brayan Delgado Oblitas  
