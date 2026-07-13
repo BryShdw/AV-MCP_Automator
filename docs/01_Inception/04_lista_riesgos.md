@@ -1,10 +1,13 @@
 # Lista de Riesgos — AV-MCP Automator
-**RUP Fase:** Inicio — IT-1 (Semana 2) | **Va al informe:** ✅ Sí
+**Fase RUP:** Inicio (Actualizado durante iteraciones)
 
-| ID | Riesgo | Prob. | Impacto | Mitigación |
-|---|---|---|---|---|
-| R-01 | No conseguir archivos .cuig de referencia para ingeniería inversa | Media | Alto | Buscar proyectos de ejemplo en foros oficiales de Crestron y documentación pública |
-| R-02 | Gemini alucina atributos ccid_* propietarios de Crestron | Alta | Alto | La IA solo genera JSON simple; Python ensambla el .cuig con plantillas deterministas |
-| R-03 | Agotamiento de la cuota de 1,000 llamadas/día de Gemini Flash-Lite | Media | Medio | Ninguna |
-| R-04 | Incompatibilidad de .cuig generados con la versión de Construct instalada | Media | Alto | Ingeniería inversa en Semanas 1–2 para detectar la versión exacta del formato |
-| R-05 | RAM insuficiente al ejecutar Ollama + LanceDB + Streamlit en paralelo | Baja | Medio | Ollama solo carga el modelo cuando Gemini falla; LanceDB embebida < 1 GB |
+| ID | Descripción | Probabilidad | Impacto | Estado | Mitigación aplicada |
+|---|---|---|---|---|---|
+| R-01 | **Incompatibilidad del archivo generado:** El archivo `.cuig` generado por el sistema no puede ser abierto o es corrupto para Crestron Construct. | Alta | Crítico | Mitigado | Implementación del patrón "Compilador MCP": la IA solo genera JSON espacial, y el script Python asegura la sintaxis correcta usando plantillas validadas y deterministas. |
+| R-02 | **Alucinación de la IA en los componentes:** El LLM inventa atributos CH5 inexistentes o parámetros visuales que rompen la estructura de Crestron. | Alta | Crítico | Mitigado | Validación estricta del JSON generado usando Pydantic v2. Solo se permiten los atributos declarados en el modelo de datos pre-analizado. |
+| R-03 | **Restricción de Memoria RAM:** LanceDB o el servidor local superan los 16GB de RAM compartidos en el hardware de ejecución. | Media | Alto | Mitigado | Uso exclusivo de LanceDB (vectorial embebida ligera < 1GB RAM) y delegación del cómputo pesado de inferencia a la nube mediante la API de Gemini 2.5 Flash-Lite. |
+| R-04 | **Cambios en formato propietario:** Crestron actualiza la estructura interna del archivo `.cuig` durante el desarrollo del proyecto. | Baja | Alto | Abierto | Mantener las plantillas Python separadas y modulares en `builder_tool.py` para permitir adaptaciones rápidas sin afectar la lógica del LLM. |
+| R-05 | **Límite de tokens de contexto:** Exceder el tamaño del contexto enviando la documentación completa de Crestron a Gemini en cada llamada. | Media | Medio | Mitigado | Implementación de `search_tool` usando LanceDB y RAG para inyectar solo el JSON Schema del componente solicitado. |
+| R-06 | **Límite de cuota diaria de Gemini API:** Alcanzar el tope de 1,000 llamadas por día del Free Tier, bloqueando el desarrollo. | Baja | Medio | Mitigado | El uso de JSON pequeños mediante el patrón Compilador MCP minimiza el tráfico. No se alcanzaron los límites. |
+| R-07 | **JSON truncado por prompts complejos:** La API de IA devuelve un JSON cortado por llegar a su límite de tokens de salida. | Media | Alto | Mitigado | Implementación de detección de truncamiento y sistema de reintento automático (`max_output_tokens=8192` y router inteligente). |
+| R-08 | **IDs duplicados entre páginas:** Crestron Construct falla al compilar si distintas páginas (`.cuig`) del mismo proyecto comparten IDs de elementos (`i1l4`, etc.). | Alta | Crítico | Mitigado | Implementación de escaneo transversal de IDs (`_scan_existing_ids`) y generador de strings aleatorios seguros en `builder_tool.py`. |

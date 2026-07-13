@@ -31,13 +31,32 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
 
-# Importar las 3 capas del compilador MCP (llamada directa, sin JSON-RPC)
-from src.server_mcp.tools.search_tool import search_component_schema
+# Importar capa 3 (Router IA) directamente, pero comunicarse con Capa 2 (MCP Server) vía JSON-RPC
+import asyncio
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
 from src.core_ai.router import (
     get_layout_from_ai, load_system_prompt,
     format_panel_constraints, build_user_prompt,
 )
-from src.server_mcp.tools.builder_tool import build_cuig_file
+
+async def call_mcp_tool(tool_name: str, arguments: dict) -> any:
+    """Invoca una herramienta en el servidor MCP vía stdio."""
+    server_script = str(PROJECT_ROOT / "src" / "server_mcp" / "main.py")
+    server_params = StdioServerParameters(
+        command=sys.executable,
+        args=[server_script],
+        env=os.environ.copy()
+    )
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            result = await session.call_tool(tool_name, arguments)
+            # FastMCP devuelve TextContent, devolvemos el texto del primer resultado
+            if result.content and len(result.content) > 0:
+                return result.content[0].text
+            return None
 
 
 # ─── BOOTSTRAP ICONS & ICON HELPER ───────────────────────────────────────────
@@ -706,7 +725,8 @@ if generate_btn and prompt:
         t0 = time.time()
 
         try:
-            schemas = search_component_schema(component_types)
+            # Llamada al servidor MCP vía stdio
+            schemas = asyncio.run(call_mcp_tool("search_component_schema", {"component_types": component_types}))
             t_search = time.time() - t0
             st.markdown(
                 f'{icon("check-circle-fill", 14, "#3FB950")} Esquemas recuperados ({t_search:.1f}s)',
@@ -770,11 +790,12 @@ if generate_btn and prompt:
         try:
             bg_color_to_use = layout_json.get("theme_background_color", "#0D1117")
 
-            cuig_path = build_cuig_file(
-                layout_json,
-                output_dir=output_path,
-                background_color=bg_color_to_use,
-            )
+            # Llamada al servidor MCP vía stdio
+            cuig_path = asyncio.run(call_mcp_tool("build_cuig_file", {
+                "layout_json": layout_json,
+                "output_dir": output_path,
+                "background_color": bg_color_to_use
+            }))
             t_build = time.time() - t0
             st.markdown(
                 f'{icon("check-circle-fill", 14, "#3FB950")} Archivo ensamblado ({t_build:.1f}s)',

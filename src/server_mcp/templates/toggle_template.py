@@ -23,8 +23,6 @@ def build_toggle_html(element_id: str, element: dict) -> str:
     Returns:
         String HTML del componente <ch5-toggle>
     """
-    label = element.get("label", "")
-
     return (
         f'<ch5-toggle '
         f'id="{element_id}" '
