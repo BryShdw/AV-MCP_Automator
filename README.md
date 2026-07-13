@@ -14,7 +14,6 @@ Middleware basado en Model Context Protocol para la generación automática de i
 - Git
 - Crestron Construct™ instalado en el sistema
 - Una clave de API válida para Gemini (Google AI Studio)
-- Una clave de API válida para Firecrawl (para capacidades de web scraping)
 
 ## Instalación
 
@@ -44,7 +43,7 @@ cp .env.example .env
 
 # 2. Editar .env con tus credenciales
 ```
-Asegúrate de editar el archivo `.env` recién creado e introducir tu `GEMINI_API_KEY` y `FIRECRAWL_API_KEY`.
+Asegúrate de editar el archivo `.env` recién creado e introducir tu `GEMINI_API_KEY`.
 
 ## Cómo ejecutar el proyecto
 
